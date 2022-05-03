@@ -1,0 +1,30 @@
+# Action for building and testing code
+---
+name: android-build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build-test:
+    strategy:
+      matrix:
+        java-version: [11]
+        distribution: ['adopt']
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: ${{ matrix.distribution }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Test project
+        run: ./gradlew test
+      - name: Build project
+        run: ./gradlew assemble

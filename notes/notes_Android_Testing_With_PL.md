@@ -1,6 +1,6 @@
 # Notes: Android Testing with Phillip Lackner
 
-Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQkwcJG4YTCSYJ13G4kVIJ10X5zisB2Lq)
+Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQkwcJG4YTCSYJ13G4kVIJ10X5zisB2Lqen)
 
 <!-- markdownlint-disable MD010 -->
 

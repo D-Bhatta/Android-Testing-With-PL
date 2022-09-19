@@ -1,3 +1,4 @@
+// RegistrationUtilTest.kt
 package com.example.testapplication
 
 import com.google.common.truth.Truth.assertThat

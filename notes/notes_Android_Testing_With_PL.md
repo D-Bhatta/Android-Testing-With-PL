@@ -12,7 +12,7 @@ Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQk
   - [Setup](#setup)
     - [testImplementaion and androidTestImplementation](#testimplementaion-and-androidtestimplementation)
     - [Adding the truth library to project](#adding-the-truth-library-to-project)
-    - [Final Dependencies in app level `build.gradle`](#final-dependencies-in-app-level-buildgradle)
+    - [Final Dependencies in app level `build.gradle` for now](#final-dependencies-in-app-level-buildgradle-for-now)
   - [Create a `RegistrationUtil.kt` object](#create-a-registrationutilkt-object)
   - [Create test file `RegistrationUtilTest.kt` under the `test` directory](#create-test-file-registrationutiltestkt-under-the-test-directory)
     - [Add tests for `RegistrationUtil.kt` in `RegistrationUtilTest.kt`](#add-tests-for-registrationutilkt-in-registrationutiltestkt)
@@ -34,70 +34,82 @@ Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQk
 
 - The `test` directory is for unit tests, and other tests which do not require android components to run.
 - The `androidTest` directory is for integrated tests, which depend on parts of the android system to run, such as fragments, activiites, and such.
-- `testImplementaion` is for tests in the `test` directory.
-- `androidTestImplementation` is for tests in the `androidTest` directory.
+- Each of `testImplementaion` and `androidTestImplementation` is called a single source set. They live in the `src/test` and `src/androidTest` folders.
+- `testImplementaion` is for tests in the `test` directory. These are 
+- `androidTestImplementation` is for tests in the `androidTest` directory. These need part of the android framework to run. These are instrumented unit tests.
 
-test-directories.png
+![Test directories](./static/img/test-directories.png)
 
 ### Adding the truth library to project
 
 - We use the `truth` library because it allows us to write much more readable assertions.
 
-### Final Dependencies in app level `build.gradle`
+### Final Dependencies in app level `build.gradle` for now
 
-```shell
+
+```gradle
 dependencies {
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    testImplementation "com.google.truth:truth:1.1.3"
-    androidTestImplementation "com.google.truth:truth:1.1.3"
+    // Truth library for help with assertions
+    testImplementation'com.google.truth:truth:1.1.3'
+    androidTestImplementation 'com.google.truth:truth:1.1.3'
 }
 ```
 
 ## Create a `RegistrationUtil.kt` object
 
 - This will be used as an object to test.
-- It acts as an utility function that checks if registration data is valid or not.
-- Add assumptions in doc string.
-- Add a variable to hold existing users.
+- It acts as an utility function that checks if registration data (username, password, confirmed password) is valid depending upon the conditions.
+- We add the conditions we assume the data to be valid under as a docstring.
+- We create a `List<String>` to act as a mock database.
 
 ```kotlin
+// RegistrationUtil.kt
 package com.example.testapplication
 
 object RegistrationUtil {
 
-    private val existingUsers =
-        listOf("Peter", "R Kesh", "Li Fong", "RakeshDeshmukh", "UsrExisting")
+  private val users: List<String> = listOf(
+    "Tom",
+    "Phillip",
+    "Sam",
+    "Alisha",
+    "Erin",
+    "Stacey2358",
+  )
 
-    /**
-     * * The input is not valid if...
-     * ...the username/password is empty
-     * ...the username is already taken
-     * ...the confirmed password is not the same as the real password
-     * ...the password is less than 12 characters in length
-     */
-
-    fun validateUserInput(
-        username: String,
-        password: String,
-        confirmedPassword: String
-    ): Boolean {
-        return true
-    }
+  /* *
+   * the input is not valid if ...
+   * ... the username or password is empty
+   * ... the password and confirmedPassword do not match
+   * ... the username is already taken
+   * ... the password length is at least 12 characters
+   * ... the password contains at least 2 digits
+   */
+  fun validateRegistrationInput(
+    username: String,
+    password: String,
+    confirmedPassword: String
+  ): Boolean {
+    return true
+  }
 }
 ```
 
 ## Create test file `RegistrationUtilTest.kt` under the `test` directory
 
-- Create test file
+- We create the test file by right clicking on the Object name and choosing `Generate...` and then `Test...`. We can also do this manually.
+- We are using the `Junit4` library, since `JUnit5` compatibility might not be there yet.
+- Since this is a unit test and not an instrumented test, that would require the android framework, we save this in the `test` directory.
 
 ```kotlin
 package com.example.testapplication
@@ -105,23 +117,24 @@ package com.example.testapplication
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class RegistrationUtilTest{
-    @Test
-    fun `empty username returns false`(){
-        val result = RegistrationUtil.validateUserInput(
-            "",
-            "123456789101112",
-            "123456789101112"
-        )
-        assertThat(result).isFalse()
-    }
+class RegistrationUtilTest {
+
+  @Test
+  fun `empty username returns false`(){
+    val result = RegistrationUtil.validateRegistrationInput(
+      username = "",
+      password = "za5la3Ich5cocuat",
+      confirmedPassword = "za5la3Ich5cocuat"
+    )
+    assertThat(result).isFalse()
+  }
 }
 ```
 
 - Change `assert` to `assertThat` method from `truth` library.
 - Use `@Test` annotation to indicate a test that will be run by junit.
-- Write descriptive test name within backticks.
-- Backticks only allowed for writing test method names.
+- Write descriptive test method name within backticks. This functionality is only available for unit tests in kotlin.
+- Instrumented tests must have proper method names, no backticks.
 - Run the test method or the test class.
 - It should fail.
 
@@ -135,69 +148,107 @@ package com.example.testapplication
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
-class RegistrationUtilTest{
+class RegistrationUtilTest {
 
     @Test
-    fun `empty username returns false`(){
-        val result = RegistrationUtil.validateUserInput(
-            "",
-            "123456789101112",
-            "123456789101112"
+    fun `empty username returns false`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "",
+            password = "za5la3Ich5cocuat",
+            confirmedPassword = "za5la3Ich5cocuat"
         )
         assertThat(result).isFalse()
     }
 
     @Test
-    fun `valid username and correctly repeated password returns true`(){
-        val result = RegistrationUtil.validateUserInput(
-            "DBhatta",
-            "123456789101112",
-            "123456789101112"
+    fun `valid username and correctly repeated password returns true`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "Rachel",
+            password = "za5la3Ich5cocuat",
+            confirmedPassword = "za5la3Ich5cocuat"
         )
         assertThat(result).isTrue()
     }
 
     @Test
-    fun `username already exists returns false`(){
-        val result = RegistrationUtil.validateUserInput(
-            "UsrExisting",
-            "123456789101112",
-            "123456789101112"
+    fun `username already exists returns false`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "Tom",
+            password = "za5la3Ich5cocuat",
+            confirmedPassword = "za5la3Ich5cocuat"
         )
         assertThat(result).isFalse()
     }
 
-    // empty password
     @Test
-    fun `empty password returs false`(){
-        val result = RegistrationUtil.validateUserInput(
-            "DBhatta",
-            "",
-            ""
-        )
-        assertThat(result).isFalse()
-    }
-    // password repeated incorrectly
-    @Test
-    fun `password and repeated password do not match returns false`(){
-        val result = RegistrationUtil.validateUserInput(
-            "DBhatta",
-            "123456789101113",
-            "123456789101112"
-        )
-        assertThat(result).isFalse()
-    }
-    // password contains less than 12 characters
-    @Test
-    fun `password less than 12 characters returns false`(){
-        val result = RegistrationUtil.validateUserInput(
-            "DBhatta",
-            "123456789",
-            "123456789"
+    fun `empty password returns false`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "Rachel",
+            password = "",
+            confirmedPassword = ""
         )
         assertThat(result).isFalse()
     }
 
+    @Test
+    fun `password and confirmed password do not match returns false`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "Rachel",
+            password = "za5la3Ich5cocuat",
+            confirmedPassword = "notmatchingpass"
+        )
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun `password length less than 12 characters returns false`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "Rachel",
+            password = "za5la",
+            confirmedPassword = "za5la"
+        )
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun `password contains less than 2 digits returns false`() {
+        val result = RegistrationUtil.validateRegistrationInput(
+            username = "Rachel",
+            password = "side1burns",
+            confirmedPassword = "side1burns"
+        )
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun `number of digits in 541132 is 6`() {
+        val result = RegistrationUtil.numberOfDigits("541132")
+        assertThat(result).isEqualTo(6)
+    }
+
+    @Test
+    fun `number of digits in 112david is 3`() {
+        val result = RegistrationUtil.numberOfDigits("112david")
+        assertThat(result).isEqualTo(3)
+    }
+
+    @Test
+    fun `number of digits in red41riding is 2`() {
+        val result = RegistrationUtil.numberOfDigits("red41riding")
+        assertThat(result).isEqualTo(2)
+    }
+
+    @Test
+    fun `number of digits in blue67one29pink is 4`() {
+        val result = RegistrationUtil.numberOfDigits("blue67one29pink")
+        assertThat(result).isEqualTo(4)
+    }
+
+    @Test
+    fun `number of digits in tint91 is 2`() {
+        val result = RegistrationUtil.numberOfDigits("tint91")
+        assertThat(result).isEqualTo(2)
+    }
 }
 ```
 
@@ -208,39 +259,59 @@ class RegistrationUtilTest{
 - Write the code and run the tests until all the tests pass
 
 ```kotlin
+// RegistrationUtil.kt
 package com.example.testapplication
 
 object RegistrationUtil {
 
-    private val existingUsers =
-        listOf("Peter", "R Kesh", "Li Fong", "RakeshDeshmukh", "UsrExisting")
+    private val users: List<String> = listOf(
+        "Tom",
+        "Phillip",
+        "Sam",
+        "Alisha",
+        "Erin",
+        "Stacey2358",
+    )
 
-    /**
-     * * The input is not valid if...
-     * ...the username/password is empty
-     * ...the username is already taken
-     * ...the confirmed password is not the same as the real password
-     * ...the password is less than 12 characters in length
+    /* *
+     * the input is not valid if ...
+     * ... the username or password is empty
+     * ... the password and confirmedPassword do not match
+     * ... the username is already taken
+     * ... the password length is at least 12 characters
+     * ... the password contains at least 2 digits
      */
-
-    fun validateUserInput(
+    fun validateRegistrationInput(
         username: String,
         password: String,
         confirmedPassword: String
     ): Boolean {
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() or password.isEmpty()) {
             return false
         }
-        if (username in existingUsers) {
+        if (!(password.equals(confirmedPassword, ignoreCase = false))) {
             return false
         }
-        if (confirmedPassword != password) {
+        if (users.contains(username)) {
             return false
         }
         if (password.length < 12) {
             return false
         }
+        if (numberOfDigits(password) < 2) {
+            return false
+        }
         return true
+    }
+
+    fun numberOfDigits(string: String): Int {
+        var count: Int = 0
+        for (letter in string) {
+            if (letter.isDigit()) {
+                count += 1
+            }
+        }
+        return count
     }
 }
 ```

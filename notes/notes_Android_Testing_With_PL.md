@@ -35,7 +35,7 @@ Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQk
 - The `test` directory is for unit tests, and other tests which do not require android components to run.
 - The `androidTest` directory is for integrated tests, which depend on parts of the android system to run, such as fragments, activiites, and such.
 - Each of `testImplementaion` and `androidTestImplementation` is called a single source set. They live in the `src/test` and `src/androidTest` folders.
-- `testImplementaion` is for tests in the `test` directory. These are 
+- `testImplementaion` is for tests in the `test` directory. These tests do not need part of the android framework to function.
 - `androidTestImplementation` is for tests in the `androidTest` directory. These need part of the android framework to run. These are instrumented unit tests.
 
 ![Test directories](./static/img/test-directories.png)
@@ -45,7 +45,6 @@ Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQk
 - We use the `truth` library because it allows us to write much more readable assertions.
 
 ### Final Dependencies in app level `build.gradle` for now
-
 
 ```gradle
 dependencies {

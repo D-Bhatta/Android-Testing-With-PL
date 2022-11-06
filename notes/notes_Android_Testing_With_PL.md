@@ -17,8 +17,8 @@ Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQk
   - [Create test file `RegistrationUtilTest.kt` under the `test` directory](#create-test-file-registrationutiltestkt-under-the-test-directory)
     - [Add tests for `RegistrationUtil.kt` in `RegistrationUtilTest.kt`](#add-tests-for-registrationutilkt-in-registrationutiltestkt)
   - [Write logic to satisfy `RegistrationUtilTest.kt` tests in `RegistrationUtil.kt`](#write-logic-to-satisfy-registrationutiltestkt-tests-in-registrationutilkt)
+  - [Instrumented tests](#instrumented-tests)
   - [Create `ResourceComparer.kt` class to compare a string resource with a string](#create-resourcecomparerkt-class-to-compare-a-string-resource-with-a-string)
-  - [Create a test class `ResourceComparerTest.kt`](#create-a-test-class-resourcecomparertestkt)
   - [Additional Information](#additional-information)
   - [Errors](#errors)
     - [Course](#course)
@@ -315,38 +315,111 @@ object RegistrationUtil {
 }
 ```
 
+## Instrumented tests
+
+- Instrumented test require the Android framework. This is because the code we are testing might depend on an Android component itself.
+
 ## Create `ResourceComparer.kt` class to compare a string resource with a string
 
+- This test will depend on a string resource. All resources in Android require the `Context`. Thus, the test for this code will be an Instrumented test.
+- In the main source set, we create a new kotlin class called `ResourceComparer.kt`. Inside it we create a function `isStringEqual` which takes a `Context` object, a resource ID of type `int`, and a `String`, and returns a `Boolean` on whether the strings are equal or not.
+
 ```kotlin
+// ResourceComparer.kt.kt
 package com.example.testapplication
 
 import android.content.Context
 
-/*
-* * Checks if the string resource at `resId` is equal to `string`
-*/
 class ResourceComparer {
-    fun isEqual(context: Context, resId: Int, string: String): Boolean{
-        return true
+
+    fun isStringEqual(context: Context, resId: Int, string: String): Boolean {
+        return false
     }
 }
 ```
 
-## Create a test class `ResourceComparerTest.kt`
+- We right click on the class name and select `Generate...` or `Alt + Insert` on Android Studio and then `Test...`.
+- We choose the name of the test, and then `OK`. Then we select the `androidTest` directory for the destination.
+- This will generate the `ResourceComparerTest` file for us.
 
 ```kotlin
+
+// ResourceComparerTest.kt
 package com.example.testapplication
 
-import org.junit.Assert.*
+class ResourceComparerTest 
+```
 
-class ResourceComparerTest{
-    
+- We need to get the `Context` object for use in our test case. We also need to initialize the `ResourceComparer`.
+- We could create a private variable as the global object, but then this object will not be unique to all the tests. This will mean that tests will share state between them, which is bad practice since one test can influence another.
+- When naming tests in `androidTest` we cannot have function names inside backticks ` `` `. We use the naming convention of `WHEN_THEN`.
+
+```kotlin
+// ResourceComparerTest.kt
+package com.example.testapplication
+
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+
+class ResourceComparerTest {
+    private val resourceComparer: ResourceComparer = ResourceComparer()
+
+    @Test
+    fun stringResourceSameAsGivenString_returnsTrue() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val result = resourceComparer.isStringEqual(context, R.string.app_name, "TestApplication")
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun stringResouceDiffernentFromGivenString_returnsFalse() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val result = resourceComparer.isStringEqual(context, R.string.app_name, "AnyString")
+        assertThat(result).isFalse()
+    }
 }
 ```
 
-- Write a test case, and change the `assertThat` function import to the `truth` library.
+- When we run the tests, it runs on the device.
+- To reduce state, we could initialize the `ResouceComparer` objects inside the test methods. That way both the tests will have their own object with fresh state.
 
 ```kotlin
+// ResourceComparerTest.kt
+package com.example.testapplication
+
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
+import org.junit.Test
+
+class ResourceComparerTest {
+    private lateinit var resourceComparer: ResourceComparer
+
+    @Test
+    fun stringResourceSameAsGivenString_returnsTrue() {
+        resourceComparer = ResourceComparer()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val result = resourceComparer.isStringEqual(context, R.string.app_name, "TestApplication")
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun stringResouceDiffernentFromGivenString_returnsFalse() {
+        resourceComparer = ResourceComparer()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val result = resourceComparer.isStringEqual(context, R.string.app_name, "AnyString")
+        assertThat(result).isFalse()
+    }
+}
+```
+
+- The tests run fine again. However, this increases the verbosity of the test.
+- Now, we use a `setup` function to initialize the dependencies for each test.
+
+```kotlin
+// ResourceComparerTest.kt
 package com.example.testapplication
 
 import android.content.Context
@@ -366,20 +439,19 @@ class ResourceComparerTest {
 
     @After
     fun teardown() {
-
     }
 
     @Test
     fun stringResourceSameAsGivenString_returnsTrue() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val result = resourceComparer.isEqual(context, R.string.app_name, "TestApplication")
+        val result = resourceComparer.isStringEqual(context, R.string.app_name, "TestApplication")
         assertThat(result).isTrue()
     }
 
     @Test
-    fun stringResourceSameAsGivenString_returnsFalse() {
+    fun stringResouceDiffernentFromGivenString_returnsFalse() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val result = resourceComparer.isEqual(context, R.string.app_name, "HellWorld")
+        val result = resourceComparer.isStringEqual(context, R.string.app_name, "AnyString")
         assertThat(result).isFalse()
     }
 }

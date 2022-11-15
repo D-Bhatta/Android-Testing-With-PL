@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">TestApplication</string>
+
+    <!--  content description: add a shopping item from the floating action button.  -->
+    <string name="add_shopping_item">Add a shopping item</string>
+
+    <!--  content description: image of the shopping item.  -->
+    <string name="shopping_item_image">Shopping Item Image</string>
+
+    <!--  default values for a shopping item that will be overridden with corresponding values.  -->
+    <string name="shopping_item_default_name">Item name</string>
+    <string name="shopping_item_default_quantity">3x</string>
+    <string name="shopping_item_default_price">Price: $3</string>
+
+    <!--  text input hints: for creating a shopping item.  -->
+    <string name="shopping_item_name">name</string>
+    <string name="shopping_item_quantity">quantity</string>
+    <string name="shopping_item_price">price</string>
+
+    <!--  text input hint: search for images for shopping items.  -->
+    <string name="search_for_images">Search for images</string>
 </resources>

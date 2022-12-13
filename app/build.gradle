@@ -33,6 +33,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
+
     namespace 'com.example.testapplication'
 }
 
@@ -124,3 +129,8 @@ dependencies {
 kapt {
     correctErrorTypes true
 }
+
+ksp {
+    arg('room.schemaLocation', "$projectDir/schemas")
+}
+

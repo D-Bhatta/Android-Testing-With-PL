@@ -3,7 +3,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp' version '1.7.20-1.0.7'
+    id 'com.google.devtools.ksp' version '1.8.0-1.0.8'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
     id 'androidx.navigation.safeargs.kotlin'
@@ -61,7 +61,7 @@ dependencies {
 
     // Dependency injection with Dagger-Hilt
     implementation "com.google.dagger:hilt-android:2.44"
-    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:1.9.0'
     kapt "com.google.dagger:hilt-compiler:2.44"
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"

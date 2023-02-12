@@ -10,7 +10,7 @@ interface ShoppingDao {
     suspend fun insertShoppingItem(shoppingItem: ShoppingItem)
 
     @Delete
-    suspend fun deleteShoppingItem(shoppingItem: ShoppingItem)
+    suspend fun deleteShoppingItem(shoppingItem: ShoppingItem): Int
 
     @Query("SELECT * FROM shopping_items")
     fun observeAllShoppingItems(): LiveData<List<ShoppingItem>>

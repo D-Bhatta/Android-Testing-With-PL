@@ -94,3 +94,6 @@ lint/tmp/
 ## Developer Environment
 
 .vscode/
+
+## Secrets
+apikey.properties

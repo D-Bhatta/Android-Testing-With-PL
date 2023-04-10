@@ -63,13 +63,14 @@ class ShoppingDaoTest {
             ShoppingItem("second test item", 1, 10.0, "url", 2)
         dao.insertShoppingItem(secondShoppingItem)
 
-        dao.deleteShoppingItem(firstShoppingItem)
+        val deletedItems: Int = dao.deleteShoppingItem(firstShoppingItem)
 
         val allShoppingItems = dao.observeAllShoppingItems().getOrAwaitValue()
 
         assertThat(allShoppingItems).doesNotContain(firstShoppingItem)
         assertThat(allShoppingItems).contains(secondShoppingItem)
         assertThat(allShoppingItems.size).isEqualTo(1)
+        assertThat(deletedItems).isEqualTo(1)
     }
 
     @Suppress("HardCodedStringLiteral")

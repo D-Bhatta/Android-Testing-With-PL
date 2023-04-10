@@ -4,7 +4,7 @@
 package com.example.testapplication.data.remote
 
 import com.example.testapplication.BuildConfig
-import com.example.testapplication.Constants.IMAGE_TYPE
+import com.example.testapplication.data.remote.Constants.IMAGE_TYPE
 import com.example.testapplication.data.remote.response.ImageResponse
 import retrofit2.Response
 import retrofit2.http.GET

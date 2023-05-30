@@ -38,24 +38,26 @@ PIXABAY_API_KEY="KAD3JD0FDHGFGHHIEIORE43KNBIONR938943N38U"
 - In the app level `build.grade` file, we create a `Properties` object and a `File` object. We load the `apikey.properties` file into the `Properties` object. We add the `PIXABAY_API_KEY` to the application's `BuildConfig` object using `buildConfigField`.
 - We can now use this in our app as `BuildConfig.PIXABAY_API_KEY`.
 
-```gradle
-def apiKeyPropertiesFile = rootProject.file("apikey.properties")
-def apiKeyProperties = new Properties()
-
-apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+```kts
+import java.util.Properties
+...
+val properties = File(rootDir, "apikey.properties").inputStream().use {
+    Properties().apply { load(it) }
+}
+val apiKeyProperties = properties.getValue("PIXABAY_API_KEY") as String
 
 android {
-    compileSdk 33
+    compileSdk = 33
 
     defaultConfig {
-        applicationId "com.example.testapplication"
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
-        buildConfigField("String", "PIXABAY_API_KEY", apiKeyProperties["PIXABAY_API_KEY"])
+        applicationId = "com.example.testapplication"
+        minSdk = 21
+        targetSdk = 33
+        versionCode = 1
+        versionName = "1.0"
+        buildConfigField("String", "PIXABAY_API_KEY", apiKeyProperties)
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 ```
 
@@ -210,6 +212,49 @@ object Constants {
 ```
 
 ## Setup DI with dagger hilt
+
+- Create an `Application` class.
+
+```kotlin
+// ShoppingApplication.kt
+package com.example.testapplication
+
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
+
+@Suppress("KDocMissingDocumentation")
+@HiltAndroidApp
+class ShoppingApplication : Application()
+
+```
+
+- Declare `ShoppingApplication` in the manifest.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:name=".ShoppingApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TestApplication">
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
 
 - Create a file `app/src/main/java/com/example/testapplication/AppModule.kt`.
 - We annotate it with `@Module` to add it to the object graph.

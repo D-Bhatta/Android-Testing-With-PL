@@ -4,9 +4,15 @@ import android.content.Context
 import androidx.room.Room
 import com.example.testapplication.Constants.DATABASE_NAME
 import com.example.testapplication.Constants.PIXABAY_BASE_URL
+import com.example.testapplication.data.local.DefaultLocalDataSource
+import com.example.testapplication.data.local.LocalDataSource
 import com.example.testapplication.data.local.ShoppingDao
 import com.example.testapplication.data.local.ShoppingListDatabase
+import com.example.testapplication.data.remote.DefaultRemoteDataSource
 import com.example.testapplication.data.remote.PixabayAPI
+import com.example.testapplication.data.remote.RemoteDataSource
+import com.example.testapplication.repository.DefaultShoppingRepository
+import com.example.testapplication.repository.ShoppingRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,4 +58,37 @@ object AppModule {
         ).build().create(PixabayAPI::class.java)
     }
 
+    /**
+     * Provides the [RemoteDataSource] implementation instance.
+     */
+    @Singleton
+    @Provides
+    fun provideRemoteDataSource(
+        pixabayAPI: PixabayAPI
+    ): RemoteDataSource {
+        return DefaultRemoteDataSource(pixabayAPI)
+    }
+
+    /**
+     * Provides the [LocalDataSource] implementation instance.
+     */
+    @Singleton
+    @Provides
+    fun provideLocalDataSource(
+        shoppingDao: ShoppingDao
+    ): LocalDataSource {
+        return DefaultLocalDataSource(shoppingDao)
+    }
+
+    /**
+     * Provides an [ShoppingRepository] implementation in [DefaultShoppingRepository].
+     */
+    @Singleton
+    @Provides
+    fun provideDefaultShoppingRepository(
+        remoteDataSource: RemoteDataSource,
+        localDataSource: LocalDataSource
+    ): ShoppingRepository {
+        return DefaultShoppingRepository(remoteDataSource, localDataSource)
+    }
 }

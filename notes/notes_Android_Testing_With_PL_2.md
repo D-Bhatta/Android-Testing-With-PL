@@ -29,158 +29,165 @@ Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQk
 
 ## Add project dependencies
 
-- In the app level `build.gradle` file, add the following dependencies:
+- In the app level `build.gradle.kts` file, add the following dependencies:
 
-```python
+```kts
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp' version '1.7.20-1.0.7'
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
-    id 'androidx.navigation.safeargs.kotlin'
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp") version "1.8.0-1.0.8"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
-    compileSdk 33
+    compileSdk = 33
 
     defaultConfig {
-        applicationId "com.example.testapplication"
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        applicationId = "com.example.testapplication"
+        minSdk = 21
+        targetSdk = 33
+        versionCode = 1
+        versionName = "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "17"
     }
-    namespace 'com.example.testapplication'
+
+    namespace = "com.example.testapplication"
+    buildToolsVersion = "33.0.0"
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     // Material Design
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation("com.google.android.material:material:1.4.0")
 
     // Dependency injection with Dagger-Hilt
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
-    kapt 'androidx.hilt:hilt-compiler:1.0.0'
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0'
-    implementation 'androidx.hilt:hilt-work:1.0.0'
+    implementation("com.google.dagger:hilt-android:2.44")
+    implementation("androidx.core:core-ktx:1.9.0")
+    kapt("com.google.dagger:hilt-compiler:2.44")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    implementation("androidx.hilt:hilt-work:1.0.0")
 
     // Data storage with SQLite: Room
-    implementation "androidx.room:room-runtime:2.4.3"
-    ksp "androidx.room:room-compiler:2.4.3"
-    implementation "androidx.room:room-ktx:2.4.3"
-    testImplementation "androidx.room:room-testing:2.4.3"
+    implementation("androidx.room:room-runtime:2.4.3")
+    ksp("androidx.room:room-compiler:2.4.3")
+    implementation("androidx.room:room-ktx:2.4.3")
+    testImplementation("androidx.room:room-testing:2.4.3")
 
     // Network transmission with Retrofit2
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
     //     Use GSON for serialization
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     //     Use Moshi for serialization
-    // implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+    // implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
 
     // Navigation Components
-    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
-    implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
-    androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.5.3")
 
     // Glide: Image loading
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    ksp 'com.github.bumptech.glide:ksp:4.14.2'
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    ksp("com.github.bumptech.glide:ksp:4.14.2")
 
     // Timber: Logging
-    implementation 'com.jakewharton.timber:timber:5.0.1'
+    implementation("com.jakewharton.timber:timber:5.0.1")
 
     // Activity KTX for viewModels()
-    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation("androidx.activity:activity-ktx:1.6.1")
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     // AndroidX
     //
     // Lifecycle
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    // Core
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
 
     // Truth library for help with assertions
-    testImplementation 'com.google.truth:truth:1.1.3'
-    androidTestImplementation 'com.google.truth:truth:1.1.3'
+    testImplementation("com.google.truth:truth:1.1.3")
+    androidTestImplementation("com.google.truth:truth:1.1.3")
 
     // Efficiently testing coroutines
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
 
     // Hamcrest: making assertions
-    testImplementation "org.hamcrest:hamcrest-all:1.3"
+    testImplementation("org.hamcrest:hamcrest-all:1.3")
 
     // Robolectric: unit testing framework
-    testImplementation "org.robolectric:robolectric:4.9"
+    testImplementation("org.robolectric:robolectric:4.9")
 
     // Mockito: mocking framework for unit tests
-    testImplementation "org.mockito:mockito-core:4.8.1"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
-    testImplementation 'org.mockito:mockito-inline:4.8.1'
-    androidTestImplementation "org.mockito:mockito-core:4.8.1"
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:2.28.3"
+    testImplementation("org.mockito:mockito-core:4.8.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.mockito:mockito-inline:4.8.1")
+    androidTestImplementation("org.mockito:mockito-core:4.8.1")
+    androidTestImplementation("com.linkedin.dexmaker:dexmaker-mockito:2.28.3")
 
 
 }
 
 // Allow references to generated code
 kapt {
-    correctErrorTypes true
+    correctErrorTypes = true
 }
 
 ```
 
-- In the project level `build.gradle` file, add the following dependencies:
+- In the project level `build.gradle.kts` file, add the following dependencies:
 
-```python
+```kts
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     dependencies {
-        def nav_version = "2.5.3"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
     }
 }
 
 plugins {
-    id 'com.android.application' version '7.3.1' apply false
-    id 'com.android.library' version '7.3.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
-    id 'com.google.dagger.hilt.android' version '2.44' apply false
+    id("com.android.application") version "8.0.0" apply false
+    id("com.android.library") version "8.0.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
+    id("com.google.dagger.hilt.android") version "2.44" apply false
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks {
+    register("clean", Delete::class) {
+        delete(rootProject.buildDir)
+    }
 }
 ```
 
@@ -336,49 +343,51 @@ interface ShoppingDao {
 
 ```
 
-- Add the following to the bottom of app level `build.gradle` file to generate schemas. This will help in migrations.
+- Add the following to the bottom of app level `build.gradle.kts` file to generate schemas. This will help in migrations.
 
-```gradle
+```kts
 ksp {
-    arg('room.schemaLocation', "$projectDir/schemas")
+    arg("room.schemaLocation", "${projectDir}/schemas")
 }
 ```
 
 - Add the following to add the generated schemas as a source set for testing:
 
-```gradle
+```kts
 android {
-    compileSdk 33
+    compileSdk = 33
 
     defaultConfig {
-        applicationId "com.example.testapplication"
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        applicationId = "com.example.testapplication"
+        minSdk = 21
+        targetSdk = 33
+        versionCode = 1
+        versionName = "1.0"
+        buildConfigField("String", "PIXABAY_API_KEY", apiKeyProperties)
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "17"
     }
 
     sourceSets {
-        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+        getByName("androidTest").assets.srcDirs(files("${projectDir}/schemas"))
     }
 
-    namespace 'com.example.testapplication'
+    namespace = "com.example.testapplication"
+    buildToolsVersion = "33.0.0"
 }
 ```
 

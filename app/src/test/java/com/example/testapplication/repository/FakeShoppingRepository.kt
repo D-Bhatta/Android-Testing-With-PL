@@ -7,9 +7,8 @@ import com.example.testapplication.data.local.LocalDataSource
 import com.example.testapplication.data.local.ShoppingItem
 import com.example.testapplication.data.remote.RemoteDataSource
 import com.example.testapplication.data.remote.response.ImageResponse
-import javax.inject.Inject
 
-class FakeShoppingRepository @Inject constructor(
+class FakeShoppingRepository constructor(
     private val remoteDataSource: RemoteDataSource, private val localDataSource: LocalDataSource
 ) : ShoppingRepository {
     override suspend fun createShoppingItem(item: ShoppingItem) {

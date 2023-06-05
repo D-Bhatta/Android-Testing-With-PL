@@ -7,9 +7,10 @@ import com.example.testapplication.data.remote.response.ImageResponse
 
 class FakeRemoteDataSource : RemoteDataSource {
     private var networkError = NetworkErrors.NONE
-    fun setNetworkError(error: NetworkErrors){
+    fun setNetworkError(error: NetworkErrors) {
         networkError = error
     }
+
     override suspend fun searchImages(
         searchQuery: String, imageType: String?
     ): Resource<ImageResponse> {
@@ -18,7 +19,7 @@ class FakeRemoteDataSource : RemoteDataSource {
                 Message("Error encountered while attempting to request API."), null
             )
         }
-        return Resource.success(ImageResponse(listOf(), 0,0))
+        return Resource.success(ImageResponse(listOf(), 0, 0))
     }
 }
 

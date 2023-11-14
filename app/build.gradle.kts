@@ -1,5 +1,7 @@
-//file:noinspection HardCodedStringLiteral
-//file:noinspection LongLine
+// file:noinspection HardCodedStringLiteral
+// file:noinspection LongLine
+@file:Suppress("HardCodedStringLiteral")
+
 import java.util.Properties
 plugins {
     id("com.android.application")
@@ -47,7 +49,6 @@ android {
     }
 
     namespace = "com.example.testapplication"
-    buildToolsVersion = "33.0.0"
 }
 
 dependencies {

@@ -210,6 +210,8 @@ object AppModule {
     /**
      * Provides the [PixabayAPI] Retrofit instance.
      */
+    @Singleton
+    @Provides
     fun providePixabayAPI(): PixabayAPI {
         return Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(
             PIXABAY_BASE_URL
@@ -296,7 +298,7 @@ class ShoppingViewModel @Inject constructor(private val repository: ShoppingRepo
     val currentImageUrl: LiveData<String> = _currentImageUrl
 
     private val _insertShoppingItemStatus = MutableLiveData<Event<Resource<ShoppingItem>>>()
-    val insertShoppingItem: LiveData<Event<Resource<ShoppingItem>>> = _insertShoppingItemStatus
+    val insertShoppingItemStatus: LiveData<Event<Resource<ShoppingItem>>> = _insertShoppingItemStatus
 
     /**
      * Set the selected image's URL.

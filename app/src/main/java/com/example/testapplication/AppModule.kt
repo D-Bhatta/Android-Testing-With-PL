@@ -52,6 +52,8 @@ object AppModule {
     /**
      * Provides the [PixabayAPI] Retrofit instance.
      */
+    @Singleton
+    @Provides
     fun providePixabayAPI(): PixabayAPI {
         return Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).baseUrl(
             PIXABAY_BASE_URL

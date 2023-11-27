@@ -27,7 +27,7 @@ android {
         versionName = "1.0"
         buildConfigField("String", "PIXABAY_API_KEY", apiKeyProperties)
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.testapplication.CustomTestRunnerHilt"
     }
 
     buildTypes {
@@ -68,6 +68,10 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
     implementation("androidx.hilt:hilt-work:1.0.0")
+    testImplementation("com.google.dagger:hilt-android-testing:2.44")
+    kaptTest("com.google.dagger:hilt-android-compiler:2.44")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
 
     // Data storage with SQLite: Room
     implementation("androidx.room:room-runtime:2.4.3")
@@ -107,6 +111,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
+
+    // Fragments
+    debugImplementation("androidx.fragment:fragment-testing:1.5.0")
 
     // Core
     testImplementation("junit:junit:4.13.2")

@@ -394,6 +394,7 @@ class HiltFragmentTestingSetupTest {
 - [Inline functions](https://kotlinlang.org/docs/inline-functions.html)
 - [Reified Functions in Kotlin](https://www.baeldung.com/kotlin/reified-functions)
 - [How does the reified keyword in Kotlin work?](https://stackoverflow.com/questions/45949584/how-does-the-reified-keyword-in-kotlin-work)
+- [Non-local returns](https://kotlinlang.org/docs/inline-functions.html#non-local-returns)
 
 [1]: <https://kotlinlang.org/docs/inline-functions.html> "Inline functions"
 [2]: <https://www.baeldung.com/kotlin/reified-functions> "Reified Functions in Kotlin"

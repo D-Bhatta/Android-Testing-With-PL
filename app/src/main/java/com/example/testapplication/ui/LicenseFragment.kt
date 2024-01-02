@@ -1,4 +1,4 @@
-// ShoppingFragment.kt
+// LicenseFragment.kt
 package com.example.testapplication.ui
 
 import android.os.Bundle

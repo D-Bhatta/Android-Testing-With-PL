@@ -1,45 +1,6 @@
-# Notes: Android Testing with Phillip Lackner: Licensing
-
-Course URL: [Android Testing with PL](https://www.youtube.com/playlist?list=PLQkwcJG4YTCSYJ13G4kVIJ10X5zisB2Lqen)
-
-<!-- markdownlint-disable MD010 -->
-
-## Sections
-
-- [Notes: Android Testing with Phillip Lackner: Licensing](#notes-android-testing-with-phillip-lackner-licensing)
-  - [Sections](#sections)
-  - [Helper function for testing LiveData objects](#helper-function-for-testing-livedata-objects)
-  - [Additional Information](#additional-information)
-  - [Errors](#errors)
-    - [Course](#course)
-    - [Screenshots](#screenshots)
-    - [Links](#links)
-  - [Notes template](#notes-template)
-
-## Helper function for testing LiveData objects
-
-- Google has some files that we can use in projects compatible with Apache V2 license.
-- To use these files, it is necessary to comply with the requirements of the Apache License.
-- In `LICENSE`, add a pointer to the dependency's license within the distribution and a short note summarizing its licensing:
-
-```LICENSE
-This project repository contains files from the
-android/architecture-components-samples repository under the Apache License,
-Version 2.0, January 2004. This is hosted at
-    https://github.com/android/architecture-components-samples
-For details see:
-    app/src/androidTest/java/com/example/testapplication/LiveDataTestUtil.kt
-    app/src/test/java/com/example/testapplication/LiveDataTestUtil.kt
-```
-
-- Retain the copyright preamble in each file.
-- Copy the Apache V2 license text from the [repository](https://github.com/android/architecture-components-samples) LICENSE file and add it underneath the copyright preamble.
-- Change the package declaration with `package com.example.testapplication` and add a comment above it stating that the line has been changed.
-- Add a note about where it was taken from, the license, the repository link. Mention changes made, and line number.
-
-```kotlin
+// HiltExtension
 /*
- * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -264,98 +225,65 @@ For details see:
  * hosted at
  *      https://github.com/android/architecture-components-samples
  * Modifications copyright (C) 2023 Debabrata Bhattacharya:
- *      package declaration on line 231
+ *      package declaration on line 235
+ *      import on line 259
+ *      argument addition on line 261
+ *      code addition on line 276
  */
 
 // ! The line immediately below this line has been modified
 package com.example.testapplication
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+import android.content.ComponentName
+import android.content.Intent
+import android.os.Bundle
+import androidx.annotation.StyleRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentFactory
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.core.internal.deps.guava.base.Preconditions
 
 /**
- * Gets the value of a [LiveData] or waits for it to have one, with a timeout.
+ * launchFragmentInContainer from the androidx.fragment:fragment-testing library
+ * is NOT possible to use right now as it uses a hardcoded Activity under the hood
+ * (i.e. [EmptyFragmentActivity]) which is not annotated with @AndroidEntryPoint.
  *
- * Use this extension from host-side (JVM) tests. It's recommended to use it alongside
- * `InstantTaskExecutorRule` or a similar mechanism to execute tasks synchronously.
+ * As a workaround, use this function that is equivalent. It requires you to add
+ * [HiltTestActivity] in the debug folder and include it in the debug AndroidManifest.xml file
+ * as can be found in this project.
  */
-fun <T> LiveData<T>.getOrAwaitValue(
-        time: Long = 2,
-        timeUnit: TimeUnit = TimeUnit.SECONDS,
-        afterObserve: () -> Unit = {}
-): T {
-    var data: T? = null
-    val latch = CountDownLatch(1)
-    val observer = object : Observer<T> {
-        override fun onChanged(o: T?) {
-            data = o
-            latch.countDown()
-            this@getOrAwaitValue.removeObserver(this)
-        }
+inline fun <reified T : Fragment> launchFragmentInHiltContainer(
+    fragmentArgs: Bundle? = null,
+    // ! The line immediately below this line has been modified
+    @StyleRes themeResId: Int = androidx.fragment.testing.R.style.FragmentScenarioEmptyFragmentActivityTheme,
+    // ! The line immediately below this line has been modified
+    fragmentFactory: FragmentFactory? = null,
+    crossinline action: Fragment.() -> Unit = {}
+) {
+    val startActivityIntent = Intent.makeMainActivity(
+        ComponentName(
+            ApplicationProvider.getApplicationContext(),
+            HiltTestActivity::class.java
+        )
+    ).putExtra(
+        "androidx.fragment.app.testing.FragmentScenario.EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY",
+        themeResId
+    )
+
+    ActivityScenario.launch<HiltTestActivity>(startActivityIntent).onActivity { activity ->
+        // ! The line immediately below this line has been modified
+        fragmentFactory?.let { activity.supportFragmentManager.fragmentFactory = it }
+        val fragment: Fragment = activity.supportFragmentManager.fragmentFactory.instantiate(
+            Preconditions.checkNotNull(T::class.java.classLoader),
+            T::class.java.name
+        )
+        fragment.arguments = fragmentArgs
+        activity.supportFragmentManager
+            .beginTransaction()
+            .add(android.R.id.content, fragment, "")
+            .commitNow()
+
+        fragment.action()
     }
-    this.observeForever(observer)
-
-    afterObserve.invoke()
-
-    // Don't wait indefinitely if the LiveData is not set.
-    if (!latch.await(time, timeUnit)) {
-        this.removeObserver(observer)
-        throw TimeoutException("LiveData value was never set.")
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    return data as T
 }
-
-```
-
-- Create a string resource for licenses.
-
-```xml
-<!-- TODO: Add string-license.xml text here -->
-```
-
-- Create a fragment with a recycler view and a license item.
-
-```xml
-<!-- TODO: Add fragment_license.xml text here -->
-```
-
-```xml
-<!-- TODO: Add item_license.xml text here -->
-```
-
-- We add supporting code in the fragment.
-
-<!-- TODO: Add fragment kotlin code here -->
-
-## Additional Information
-
-## Errors
-
-### Course
-
-### Screenshots
-
-### Links
-
-## Notes template
-
-```language
-
-```
-
-![Text](./static/img/name.jpg)
-
-- [Text](Link)
-- StackOverflow:
-- Android Dev Docs ():
-- AndroidX releases:
-- ProAndroidDev
-- Dagger Docs: [Hilt Application](https://dagger.dev/hilt/application.html)
-- Howtodoandroid:
-- Medium:

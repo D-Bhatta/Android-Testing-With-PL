@@ -5,6 +5,9 @@
       <entry key="All Tests">
         <State />
       </entry>
+      <entry key="Unit-Instrumented-Tests">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

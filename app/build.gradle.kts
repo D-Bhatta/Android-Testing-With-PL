@@ -17,12 +17,12 @@ val properties = File(rootDir, "apikey.properties").inputStream().use {
 val apiKeyProperties = properties.getValue("PIXABAY_API_KEY") as String
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.testapplication"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         buildConfigField("String", "PIXABAY_API_KEY", apiKeyProperties)
@@ -49,6 +49,11 @@ android {
     }
 
     namespace = "com.example.testapplication"
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
 }
 
 dependencies {

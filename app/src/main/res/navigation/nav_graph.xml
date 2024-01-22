@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/shoppingFragment">
 
+    <fragment
+        android:id="@+id/shoppingFragment"
+        android:name="com.example.testapplication.ui.ShoppingFragment"
+        android:label="ShoppingFragment" >
+        <action
+            android:id="@+id/action_shoppingFragment_to_licenseFragment"
+            app:destination="@id/licenseFragment" />
+        <action
+            android:id="@+id/action_shoppingFragment_to_addShoppingItemFragment"
+            app:destination="@id/addShoppingItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addShoppingItemFragment"
+        android:name="com.example.testapplication.ui.AddShoppingItemFragment"
+        android:label="AddShoppingItemFragment" >
+        <action
+            android:id="@+id/action_addShoppingItemFragment_to_imagePickFragment"
+            app:destination="@id/imagePickFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imagePickFragment"
+        android:name="com.example.testapplication.ui.ImagePickFragment"
+        android:label="ImagePickFragment" />
+    <fragment
+        android:id="@+id/licenseFragment"
+        android:name="com.example.testapplication.ui.LicenseFragment"
+        android:label="LicenseFragment" />
 </navigation>

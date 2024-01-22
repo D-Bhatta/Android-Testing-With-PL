@@ -225,10 +225,12 @@
  * hosted at
  *      https://github.com/android/architecture-components-samples
  * Modifications copyright (C) 2023 Debabrata Bhattacharya:
- *      package declaration on line 235
- *      import on line 259
- *      argument addition on line 261
- *      code addition on line 276
+ *      package declaration on line 237
+ *      import on line 261
+ *      argument addition on line 263
+ *      argument data type change on line 265
+ *      code addition on line 279
+ *      data type cast on line 291
  */
 
 // ! The line immediately below this line has been modified
@@ -238,11 +240,11 @@ import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StyleRes
+import androidx.core.util.Preconditions
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.core.internal.deps.guava.base.Preconditions
 
 /**
  * launchFragmentInContainer from the androidx.fragment:fragment-testing library
@@ -259,7 +261,8 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     @StyleRes themeResId: Int = androidx.fragment.testing.R.style.FragmentScenarioEmptyFragmentActivityTheme,
     // ! The line immediately below this line has been modified
     fragmentFactory: FragmentFactory? = null,
-    crossinline action: Fragment.() -> Unit = {}
+    // ! The line immediately below this line has been modified
+    crossinline action: T.() -> Unit = {}
 ) {
     val startActivityIntent = Intent.makeMainActivity(
         ComponentName(
@@ -284,6 +287,7 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
             .add(android.R.id.content, fragment, "")
             .commitNow()
 
-        fragment.action()
+        // ! The line immediately below this line has been modified
+        (fragment as T).action()
     }
 }

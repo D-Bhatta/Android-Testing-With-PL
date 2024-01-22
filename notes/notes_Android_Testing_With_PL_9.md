@@ -247,51 +247,103 @@ class ShoppingFragmentTest {
   - sets the navigation controller with the mocked `NavController` object using `Navigation.setViewNavController`.
   - use `Espresso.pressBack` to press the back button to navigate back.
   - verify that the back navigation succeeded with `Mockito.verify(navController).popBackStack()`
+- Setup the `InstantTaskExecutorRule` rule.
+- Create a test function `pressBackButton_setBlankImageUrl` that:
+  - sets up a `testViewModel` with fake data sources.
+  - sets up a mock `NavController` with `Mockito.mock`.
+  - sets the navigation controller with the mocked `NavController` object using `Navigation.setViewNavController`.
+  - sets the `viewModel` of the `Fragment` to the `testViewModel` created.
+  - use `Espresso.pressBack` to press the back button to navigate back.
+  - assert that the url is blank.
 
 ```kotlin
-// AddShoppingItemFragment.kt
+// AddShoppingItemFragmentTest.kt
+
 package com.example.testapplication.ui
 
-import android.os.Bundle
-import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.filters.MediumTest
 import com.example.testapplication.R
-import com.example.testapplication.databinding.FragmentAddShoppingItemBinding
+import com.example.testapplication.data.local.FakeLocalDataSourceAndroidTest
+import com.example.testapplication.data.remote.FakeRemoteDataSourceAndroidTest
+import com.example.testapplication.getOrAwaitValue
+import com.example.testapplication.launchFragmentInHiltContainer
+import com.example.testapplication.repository.DefaultShoppingRepository
+import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
-class AddShoppingItemFragment : Fragment(R.layout.fragment_add_shopping_item) {
+@MediumTest
+@HiltAndroidTest
+class AddShoppingItemFragmentTest {
 
-    lateinit var viewModel: ShoppingViewModel
+    @get:Rule
+    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private var fragmentAddShoppingItemBinding: FragmentAddShoppingItemBinding? = null
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentAddShoppingItemBinding.bind(view)
-        fragmentAddShoppingItemBinding = binding
+    @get:Rule
+    val hiltAndroidRule: HiltAndroidRule = HiltAndroidRule(this)
 
-        viewModel = ViewModelProvider(requireActivity())[ShoppingViewModel::class.java]
-
-        binding.imageViewShoppingImage.setOnClickListener {
-            findNavController().navigate(
-                AddShoppingItemFragmentDirections.actionAddShoppingItemFragmentToImagePickFragment()
-            )
-        }
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                viewModel.setCurrentImageUrl("")
-                findNavController().popBackStack()
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(callback)
+    @Before
+    fun setUp() {
+        hiltAndroidRule.inject()
     }
 
-    override fun onDestroyView() {
-        fragmentAddShoppingItemBinding = null
-        super.onDestroyView()
+    @Test
+    fun clickImageViewShoppingImage_navigateToImagePickFragment() {
+        val navController = mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+            Navigation.setViewNavController(requireView(), navController)
+        }
+
+        onView(withId(R.id.imageViewShoppingImage)).perform(click())
+
+        verify(navController).navigate(
+            AddShoppingItemFragmentDirections.actionAddShoppingItemFragmentToImagePickFragment()
+        )
+    }
+
+    @Test
+    fun pressBackButton_popBackStack() {
+        val navController = mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+            Navigation.setViewNavController(requireView(), navController)
+        }
+
+        pressBack()
+
+        verify(navController).popBackStack()
+    }
+
+    @Test
+    fun pressBackButton_setBlankImageUrl() {
+        val testViewModel = ShoppingViewModel(
+            DefaultShoppingRepository(
+                FakeRemoteDataSourceAndroidTest(), FakeLocalDataSourceAndroidTest()
+            )
+        )
+        val navController = mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+            Navigation.setViewNavController(requireView(), navController)
+            viewModel = testViewModel
+        }
+
+        pressBack()
+
+        assertThat(testViewModel.currentImageUrl.getOrAwaitValue()).isEqualTo("")
     }
 }
 

@@ -16,4 +16,5 @@ object Constants {
     const val PIXABAY_BASE_URL: String = "https://pixabay.com"
     const val SHOPPING_ITEM_NAME_LENGTH: Int = 25
     const val SHOPPING_ITEM_PRICE_LENGTH: Int = 10
+    const val GRID_SPAN_COUNT: Int = 3
 }

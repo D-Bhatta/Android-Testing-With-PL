@@ -19,4 +19,9 @@
 
     <!--  text input hint: search for images for shopping items.  -->
     <string name="search_for_images">Search for images</string>
+
+    <!--  text input hint: add a shopping item.  -->
+    <string name="shopping_item_added">Shopping Item added</string>
+    <string name="error_adding_shopping_item">Error adding Shopping Item</string>
+    <string name="add">Add</string>
 </resources>

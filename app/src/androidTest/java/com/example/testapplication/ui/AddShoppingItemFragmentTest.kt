@@ -8,10 +8,12 @@ import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.filters.MediumTest
 import com.example.testapplication.R
 import com.example.testapplication.data.local.FakeLocalDataSourceAndroidTest
+import com.example.testapplication.data.local.ShoppingItem
 import com.example.testapplication.data.remote.FakeRemoteDataSourceAndroidTest
 import com.example.testapplication.getOrAwaitValue
 import com.example.testapplication.launchFragmentInHiltContainer
@@ -24,7 +26,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
+@Suppress("HardCodedStringLiteral")
 @MediumTest
 @HiltAndroidTest
 class AddShoppingItemFragmentTest {
@@ -35,6 +39,9 @@ class AddShoppingItemFragmentTest {
     @get:Rule
     val hiltAndroidRule: HiltAndroidRule = HiltAndroidRule(this)
 
+    @Inject
+    lateinit var fragmentFactory: ShoppingFragmentFactory
+
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
@@ -44,7 +51,7 @@ class AddShoppingItemFragmentTest {
     fun clickImageViewShoppingImage_navigateToImagePickFragment() {
         val navController = mock(NavController::class.java)
 
-        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+        launchFragmentInHiltContainer<AddShoppingItemFragment>(fragmentFactory = fragmentFactory) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
@@ -59,7 +66,7 @@ class AddShoppingItemFragmentTest {
     fun pressBackButton_popBackStack() {
         val navController = mock(NavController::class.java)
 
-        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+        launchFragmentInHiltContainer<AddShoppingItemFragment>(fragmentFactory = fragmentFactory) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
@@ -77,7 +84,7 @@ class AddShoppingItemFragmentTest {
         )
         val navController = mock(NavController::class.java)
 
-        launchFragmentInHiltContainer<AddShoppingItemFragment> {
+        launchFragmentInHiltContainer<AddShoppingItemFragment>(fragmentFactory = fragmentFactory) {
             Navigation.setViewNavController(requireView(), navController)
             viewModel = testViewModel
         }
@@ -85,5 +92,44 @@ class AddShoppingItemFragmentTest {
         pressBack()
 
         assertThat(testViewModel.currentImageUrl.getOrAwaitValue()).isEqualTo("")
+    }
+
+    @Test
+    fun pressAddShoppingItemBtn_insertShoppingItem() {
+        val itemName = "test_shopping_item_name"
+        val itemPrice = 5.0
+        val itemQuantity = 10
+        val testViewModel = ShoppingViewModel(
+            DefaultShoppingRepository(
+                FakeRemoteDataSourceAndroidTest(), FakeLocalDataSourceAndroidTest()
+            )
+        )
+        val navController = mock(NavController::class.java)
+
+        launchFragmentInHiltContainer<AddShoppingItemFragment>(fragmentFactory = fragmentFactory) {
+            Navigation.setViewNavController(requireView(), navController)
+            viewModel = testViewModel
+        }
+
+        onView(
+            withId(R.id.editTextShoppingItemName)
+        ).perform(replaceText(itemName))
+        onView(
+            withId(R.id.editTextShoppingItemPrice)
+        ).perform(replaceText(itemPrice.toString()))
+        onView(
+            withId(R.id.editTextShoppingItemQuantity)
+        ).perform(replaceText(itemQuantity.toString()))
+
+        onView((withId(R.id.addShoppingItemBtn))).perform(click())
+
+        assertThat(
+            testViewModel.shoppingItems.getOrAwaitValue()
+        ).contains(
+            ShoppingItem(
+                itemName, itemQuantity, itemPrice, ""
+            )
+        )
+
     }
 }

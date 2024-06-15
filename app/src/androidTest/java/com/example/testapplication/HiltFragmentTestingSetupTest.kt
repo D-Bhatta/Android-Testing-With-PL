@@ -4,6 +4,7 @@ package com.example.testapplication
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.testapplication.ui.AddShoppingItemFragment
+import com.example.testapplication.ui.ShoppingFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -28,6 +29,6 @@ class HiltFragmentTestingSetupTest {
 
     @Test
     fun testLaunchFragmentInHiltContainer() {
-        launchFragmentInHiltContainer<AddShoppingItemFragment> {}
+        launchFragmentInHiltContainer<ShoppingFragment> {}
     }
 }

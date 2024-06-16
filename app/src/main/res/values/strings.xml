@@ -24,4 +24,9 @@
     <string name="shopping_item_added">Shopping Item added</string>
     <string name="error_adding_shopping_item">Error adding Shopping Item</string>
     <string name="add">Add</string>
+
+    <!--  ShoppingFragment.kt BEGIN  -->
+    <string name="item_deleted_successfully">Item deleted successfully</string>
+    <string name="total_price">"Total Price: "</string>
+    <!--  ShoppingFragment.kt END  -->
 </resources>

@@ -58,7 +58,7 @@ class ShoppingViewModel @Inject constructor(private val repository: ShoppingRepo
         }
     }
 
-    private fun createShoppingItem(shoppingItem: ShoppingItem) = viewModelScope.launch {
+    fun createShoppingItem(shoppingItem: ShoppingItem) = viewModelScope.launch {
         repository.createShoppingItem(shoppingItem)
     }
 
